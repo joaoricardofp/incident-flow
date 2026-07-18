@@ -10,6 +10,11 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@better-auth/prisma-adapter": "^1.6.23",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
+    "@prisma/extension-accelerate": "^3.0.1",
+    "better-auth": "^1.6.23",
     "next": "16.2.10",
     "react": "19.2.4",
     "react-dom": "19.2.4"
