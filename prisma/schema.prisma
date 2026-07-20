@@ -13,15 +13,20 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id                 String              @id
+  name               String
+  email              String
+  emailVerified      Boolean             @default(false)
+  image              String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  sessions           Session[]
+  accounts           Account[]
+  memberships        Membership[]
+  incidents          Incident[]
+  timelines          Timeline[]
+  postmortems        Postmortem[]        @relation("PostmortemCreatedBy")
+  postmortemVersions PostmortemVersion[] @relation("PostmortemEditedBy")
 
   @@unique([email])
   @@map("user")
@@ -73,4 +78,125 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+// ---
+
+model Workspace {
+  id          String       @id @default(cuid())
+  name        String
+  slug        String       @unique
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  memberships Membership[]
+  incidents   Incident[]
+
+  @@map("workspace")
+}
+
+model Membership {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  role        Role      @default(VIEWER)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userId, workspaceId])
+  @@map("membership")
+}
+
+enum Role {
+  ADMIN
+  VIEWER
+}
+
+model Incident {
+  id          String      @id @default(cuid())
+  workspaceId String
+  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  status      Status      @default(OPEN)
+  severity    Severity
+  createdById String?
+  createdBy   User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime    @default(now())
+  resolvedAt  DateTime?
+  updatedAt   DateTime    @updatedAt
+  timelines   Timeline[]
+  postmortem  Postmortem?
+
+  @@index([workspaceId, status])
+  @@map("incident")
+}
+
+enum Status {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model Timeline {
+  id         String       @id @default(cuid())
+  incidentId String
+  incident   Incident     @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  authorId   String?
+  author     User?        @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  type       TimelineType
+  metadata   Json?
+  message    String?
+  createdAt  DateTime     @default(now())
+
+  @@index([incidentId, createdAt])
+  @@map("timeline")
+}
+
+enum TimelineType {
+  COMMENT
+  STATUS_CHANGED
+  SEVERITY_CHANGED
+}
+
+model Postmortem {
+  id                 String              @id @default(cuid())
+  incidentId         String              @unique
+  incident           Incident            @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  createdById        String?
+  createdBy          User?               @relation("PostmortemCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  content            Json
+  status             StatusPostmortem    @default(DRAFT)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  postmortemVersions PostmortemVersion[]
+
+  @@index([createdById])
+  @@map("postmortem")
+}
+
+enum StatusPostmortem {
+  DRAFT
+  PUBLISHED
+}
+
+model PostmortemVersion {
+  id           String     @id @default(cuid())
+  postmortemId String
+  postmortem   Postmortem @relation(fields: [postmortemId], references: [id], onDelete: Cascade)
+  editedById   String?
+  editedBy     User?      @relation("PostmortemEditedBy", fields: [editedById], references: [id], onDelete: SetNull)
+  content      Json
+  createdAt    DateTime   @default(now())
+
+  @@index([postmortemId, createdAt])
+  @@map("postmortem_version")
 }
