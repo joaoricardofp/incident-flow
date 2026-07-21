@@ -30,6 +30,15 @@ export async function getMembership({
   };
 }
 
+const roleLevel: Record<Role, number> = {
+  VIEWER: 1,
+  ADMIN: 2,
+}
+
+export function hasMinimumRole({ role, minRole }: { role: Role; minRole: Role }): boolean {
+  return roleLevel[role] >= roleLevel[minRole];
+}
+
 export async function requireMembership({
   userId,
   workspaceId,
@@ -39,7 +48,7 @@ export async function requireMembership({
 
   if (!membership) throw new Error("User is not a member of this workspace");
 
-  if (membership.role !== minRole)
+  if (!hasMinimumRole({ role: membership.role, minRole }))
     throw new Error("User does not have the required role");
 
   return membership;
