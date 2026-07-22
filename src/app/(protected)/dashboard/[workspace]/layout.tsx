@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import { requireMembership } from "@/lib/membership";
+import { AuthorizationError, requireMembership } from "@/lib/membership";
 import { getWorkspaceBySlug } from "@/modules/workspace/queries";
 import { notFound, redirect } from "next/navigation";
 
@@ -20,11 +20,19 @@ export default async function WorkspaceLayout({
 
   if (!workspace) notFound();
 
-  await requireMembership({
-    userId: session.user.id,
-    workspaceId: workspace.id,
-    minRole: "VIEWER",
-  });
+  try {
+    await requireMembership({
+      userId: session.user.id,
+      workspaceId: workspace.id,
+      minRole: "VIEWER",
+    });
+  } catch (error) {
+    if (error instanceof AuthorizationError) {
+      notFound();
+    } else {
+      throw error;
+    }
+  }
 
   return <>{children}</>;
 }
