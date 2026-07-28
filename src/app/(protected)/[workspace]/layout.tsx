@@ -8,22 +8,22 @@ export default async function WorkspaceLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ slug: string }>;
+  params: Promise<{ workspace: string }>;
 }) {
   const session = await getSession();
 
   if (!session) redirect("/sign-in");
 
-  const { slug } = await params;
+  const { workspace } = await params;
 
-  const workspace = await getWorkspaceBySlug({ slug });
+  const workspaceBySlug = await getWorkspaceBySlug({ slug: workspace });
 
-  if (!workspace) notFound();
+  if (!workspaceBySlug) notFound();
 
   try {
     await requireMembership({
       userId: session.user.id,
-      workspaceId: workspace.id,
+      workspaceId: workspaceBySlug.id,
       minRole: "VIEWER",
     });
   } catch (error) {
