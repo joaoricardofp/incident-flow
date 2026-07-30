@@ -1,21 +1,63 @@
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { getSession } from "@/lib/auth";
 import { WorkspaceCard } from "@/modules/workspace/components/workspace-card";
 import { getWorkspacesByUser } from "@/modules/workspace/queries";
+import { ArrowUpRightIcon, BugOffIcon } from "lucide-react";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const session = await getSession();
 
+  if (!session) redirect("/sign-in");
+
   const workspaces = await getWorkspacesByUser({
-    userId: session?.user.id as string,
+    userId: session.user.id,
   });
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        {workspaces.map((workspace) => (
-          <WorkspaceCard key={workspace.id} {...workspace} />
-        ))}
-      </div>
+      {workspaces && workspaces.length > 0 ? (
+        <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+          {workspaces.map((workspace) => (
+            <WorkspaceCard key={workspace.id} {...workspace} />
+          ))}
+        </div>
+      ) : (
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <BugOffIcon />
+            </EmptyMedia>
+            <EmptyTitle>No workspaces found</EmptyTitle>
+            <EmptyDescription>
+              You don't have any workspaces yet.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent className="flex-row justify-center gap-2">
+            <Button>Create Workspace</Button>
+            <Button variant="outline">Enter Workspace</Button>
+          </EmptyContent>
+          <Button
+            variant="link"
+            className="text-muted-foreground"
+            size="sm"
+            nativeButton={false}
+            render={
+              <a href="#">
+                Learn More <ArrowUpRightIcon />
+              </a>
+            }
+          />
+        </Empty>
+      )}
     </div>
   );
 }
