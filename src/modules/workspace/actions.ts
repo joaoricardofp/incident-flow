@@ -1,12 +1,13 @@
 "use server";
 
+import { randomUUID } from "crypto";
+import { Prisma } from "@/generated/prisma/client";
 import { getSession } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { Prisma } from "@/generated/prisma/client";
-import { randomUUID } from "crypto";
 
 type CreateWorkspaceResult =
-  { success: true; slug: string } | { success: false; error: string };
+  | { success: true; slug: string }
+  | { success: false; error: string };
 
 export async function createWorkspace(): Promise<CreateWorkspaceResult> {
   const session = await getSession();

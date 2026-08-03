@@ -1,3 +1,5 @@
+import { BugOffIcon } from "lucide-react";
+import { redirect } from "next/navigation";
 import { Navigation } from "@/components/navigation";
 import {
   Empty,
@@ -11,8 +13,6 @@ import { getSession } from "@/lib/auth";
 import { CreateWorkspaceButton } from "@/modules/workspace/components/create-workspace-button";
 import { WorkspaceCard } from "@/modules/workspace/components/workspace-card";
 import { getWorkspacesByUser } from "@/modules/workspace/queries";
-import { BugOffIcon } from "lucide-react";
-import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -25,7 +25,11 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <Navigation name={session.user.name} email={session.user.email} image={session.user.image}>
+      <Navigation
+        name={session.user.name}
+        email={session.user.email}
+        image={session.user.image}
+      >
         <Heading className="text-sm font-medium">Dashboard</Heading>
       </Navigation>
       <div className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">

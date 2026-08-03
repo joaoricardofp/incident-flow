@@ -1,5 +1,14 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
+import { authClient } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
+import { GitHubIcon, GoogleIcon } from "../icons";
+import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   Field,
@@ -9,17 +18,8 @@ import {
   FieldLabel,
   FieldSeparator,
 } from "../ui/field";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
 import { InputPassword } from "../ui/input-password";
-import { Button } from "../ui/button";
-import { cn } from "@/lib/utils";
-import { GitHubIcon, GoogleIcon } from "../icons";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
 import { Spinner } from "../ui/spinner";
 
 const schema = z.object({

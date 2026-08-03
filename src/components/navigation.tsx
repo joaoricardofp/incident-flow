@@ -1,6 +1,18 @@
-"use client"
+"use client";
 
+import {
+  BadgeCheckIcon,
+  BadgeQuestionMarkIcon,
+  BookIcon,
+  LogOutIcon,
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,13 +22,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { BadgeCheckIcon, BadgeQuestionMarkIcon, BookIcon, LogOutIcon } from "lucide-react";
-import Link from "next/link";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 type NavigationProps = React.ComponentProps<"nav"> & {
   name: string;
@@ -54,18 +59,17 @@ export function Navigation({
                       src={image ? `${image}` : undefined}
                       alt="Avatar"
                     />
-                    <AvatarFallback>
-                      {name.charAt(0)}
-                    </AvatarFallback>
+                    <AvatarFallback>{name.charAt(0)}</AvatarFallback>
                   </Avatar>
                 </Button>
               }
             />
-            <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg" align="end">
+            <DropdownMenuContent
+              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+              align="end"
+            >
               <DropdownMenuGroup>
-                <DropdownMenuLabel>
-                  {email}
-                </DropdownMenuLabel>
+                <DropdownMenuLabel>{email}</DropdownMenuLabel>
                 <DropdownMenuItem render={<Link href="/account" />}>
                   <BadgeCheckIcon />
                   Account
@@ -84,16 +88,18 @@ export function Navigation({
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem onClick={async () => {
-                  await authClient.signOut({
-                    fetchOptions: {
-                      onSuccess: () => {
-                        toast("Logged out successfully");
-                        router.push("/sign-in");
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await authClient.signOut({
+                      fetchOptions: {
+                        onSuccess: () => {
+                          toast("Logged out successfully");
+                          router.push("/sign-in");
+                        },
                       },
-                    },
-                  });
-                }}>
+                    });
+                  }}
+                >
                   <LogOutIcon />
                   Log out
                 </DropdownMenuItem>

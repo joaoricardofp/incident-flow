@@ -1,4 +1,4 @@
-import { Role } from "@/generated/prisma/enums";
+import type { Role } from "@/generated/prisma/enums";
 import prisma from "./prisma";
 
 type MembershipParams = {
@@ -59,7 +59,8 @@ export async function requireMembership({
 }: RequireMembershipParams): Promise<{ role: Role }> {
   const membership = await getMembership({ userId, workspaceId });
 
-  if (!membership) throw new AuthorizationError("User is not a member of this workspace");
+  if (!membership)
+    throw new AuthorizationError("User is not a member of this workspace");
 
   if (!hasMinimumRole({ role: membership.role, minRole }))
     throw new AuthorizationError("User does not have the required role");

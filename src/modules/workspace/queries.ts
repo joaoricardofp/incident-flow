@@ -1,4 +1,4 @@
-import { Role } from "@/generated/prisma/enums";
+import type { Role } from "@/generated/prisma/enums";
 import prisma from "@/lib/prisma";
 
 export async function getWorkspaceBySlug({

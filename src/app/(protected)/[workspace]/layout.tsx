@@ -1,7 +1,7 @@
+import { notFound, redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { AuthorizationError, requireMembership } from "@/lib/membership";
 import { getWorkspaceBySlug } from "@/modules/workspace/queries";
-import { notFound, redirect } from "next/navigation";
 
 export default async function WorkspaceLayout({
   children,

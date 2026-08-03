@@ -1,7 +1,7 @@
-import React from "react";
-import NextLink from "next/link";
-import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
+import NextLink from "next/link";
+import type React from "react";
+import { cn } from "@/lib/utils";
 
 type LinkProps = React.ComponentPropsWithoutRef<"a"> & {
   href: string;
@@ -139,4 +139,4 @@ function Blockquote({
   );
 }
 
-export { Link, Heading, Text, Strong, Numeric, Code, Blockquote };
+export { Blockquote, Code, Heading, Link, Numeric, Strong, Text };

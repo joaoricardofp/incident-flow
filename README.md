@@ -378,19 +378,13 @@ sequenceDiagram
 
 ## How to Contribute
 
-To contribute to TaskFlow:
-
-1. Fork the repository and create a feature branch (`git checkout -b feature/your-feature-name`).
-2. Adhere to code quality rules by running Biome formatting and linting (`pnpm run format` & `pnpm run lint`).
-3. Verify TypeScript type safety without compilation errors (`pnpm dlx tsc --noEmit`).
-4. Commit changes following [Conventional Commits](https://www.conventionalcommits.org/) standards (e.g., `feat(workspace): description`).
-5. Open a Pull Request against the `main` branch.
+Please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) guide for detailed guidelines on setting up the local development environment, coding standards, Biome formatting, type checking, and Conventional Commits conventions.
 
 ---
 
 ## License
 
-No `LICENSE` file is currently included in the repository, and `package.json` sets `"private": true`. All rights are reserved by the project owners unless specified otherwise.
+This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
 
 ---
 
@@ -398,9 +392,8 @@ No `LICENSE` file is currently included in the repository, and `package.json` se
 
 The following items could not be confirmed from the codebase and should be updated once available:
 
-1. **License File:** No `LICENSE` file exists in the repository root, and `package.json` specifies `"private": true`.
-2. **Environment Example File:** No `.env.example` file exists in the repository root (variables documented in this README were identified through `.env` and source code inspection).
-3. **Automated Test Framework:** No testing dependencies (Jest, Vitest, Playwright, Cypress) or test execution scripts are configured in `package.json`.
-4. **CI/CD Configuration:** No `.github/workflows` directory or CI pipeline definitions exist in the repository.
-5. **Containerization Setup:** No `Dockerfile` or `docker-compose.yml` file is present in the repository root.
-6. **Liveblocks API Route & Editor UI Components:** Liveblocks packages (`@liveblocks/client`, `@liveblocks/react-tiptap`, `@liveblocks/node`) and `liveblocks.config.ts` are present, but the HTTP route handler (`/api/liveblocks`) and Tiptap editor UI components have not yet been implemented in `src/`.
+1. **Environment Example File:** No `.env.example` file exists in the repository root (variables documented in this README were identified through `.env` and source code inspection).
+2. **Automated Test Framework:** No testing dependencies (Jest, Vitest, Playwright, Cypress) or test execution scripts are configured in `package.json`.
+3. **CI/CD Configuration:** No `.github/workflows` directory or CI pipeline definitions exist in the repository.
+4. **Containerization Setup:** No `Dockerfile` or `docker-compose.yml` file is present in the repository root.
+5. **Liveblocks API Route & Editor UI Components:** Liveblocks packages (`@liveblocks/client`, `@liveblocks/react-tiptap`, `@liveblocks/node`) and `liveblocks.config.ts` are present, but the HTTP route handler (`/api/liveblocks`) and Tiptap editor UI components have not yet been implemented in `src/`.

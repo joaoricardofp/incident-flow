@@ -1,9 +1,8 @@
 "use client";
 
-import * as React from "react";
-
-import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
 import { EyeClosedIcon, EyeIcon } from "lucide-react";
+import * as React from "react";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
 
 function InputPassword({ ...props }: React.ComponentProps<"input">) {
   const [isView, setIsView] = React.useState<boolean>(false);
