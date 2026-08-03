@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -8,9 +7,11 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { getSession } from "@/lib/auth";
+import { CreateWorkspaceButton } from "@/modules/workspace/components/create-workspace-button";
 import { WorkspaceCard } from "@/modules/workspace/components/workspace-card";
 import { getWorkspacesByUser } from "@/modules/workspace/queries";
 import { ArrowUpRightIcon, BugOffIcon } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
@@ -24,7 +25,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      {workspaces && workspaces.length > 0 ? (
+      {workspaces.length > 0 ? (
         <div className="grid auto-rows-min gap-4 md:grid-cols-3">
           {workspaces.map((workspace) => (
             <WorkspaceCard key={workspace.id} {...workspace} />
@@ -42,20 +43,8 @@ export default async function DashboardPage() {
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent className="flex-row justify-center gap-2">
-            <Button>Create Workspace</Button>
-            <Button variant="outline">Enter Workspace</Button>
+            <CreateWorkspaceButton />
           </EmptyContent>
-          <Button
-            variant="link"
-            className="text-muted-foreground"
-            size="sm"
-            nativeButton={false}
-            render={
-              <a href="#">
-                Learn More <ArrowUpRightIcon />
-              </a>
-            }
-          />
         </Empty>
       )}
     </div>
