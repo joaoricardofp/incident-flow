@@ -152,7 +152,7 @@ task-flow/
 Ensure your development environment meets the following requirements:
 
 - **Node.js:** `v20.x` or higher
-- **Package Manager:** `npm` or `pnpm` (repository contains `pnpm-lock.yaml`)
+- **Package Manager:** `pnpm` (repository contains `pnpm-lock.yaml`)
 - **PostgreSQL Database:** A PostgreSQL database instance (local or hosted, e.g., Neon Postgres)
 
 ---
@@ -169,8 +169,6 @@ Ensure your development environment meets the following requirements:
 2. **Install dependencies:**
 
    ```bash
-   npm install
-   # or
    pnpm install
    ```
 
@@ -190,8 +188,8 @@ Ensure your development environment meets the following requirements:
 4. **Generate Prisma Client and push database schema:**
 
    ```bash
-   npx prisma generate
-   npx prisma db push
+   pnpm dlx prisma generate
+   pnpm dlx prisma db push
    ```
 
 5. **Seed the database (Optional):**
@@ -200,7 +198,7 @@ Ensure your development environment meets the following requirements:
    > The seed script (`prisma/seed.ts`) links mock data to pre-existing user accounts (`admin@example.com`, `alice@example.com`, `bob@example.com`). Register these users via the application sign-up form before executing the seed script.
 
    ```bash
-   npx prisma db seed
+   pnpm dlx prisma db seed
    ```
 
 ---
@@ -227,7 +225,7 @@ The application configures environment variables as listed below:
 Start the Next.js development server with hot-reloading:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
@@ -237,13 +235,13 @@ Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 1. Build the production application bundle:
 
    ```bash
-   npm run build
+   pnpm run build
    ```
 
 2. Launch the production server:
 
    ```bash
-   npm run start
+   pnpm run start
    ```
 
 ---
@@ -261,11 +259,11 @@ The following scripts are defined in `package.json`:
 
 | Command | Action |
 | :--- | :--- |
-| `npm run dev` | Starts the Next.js development server on `http://localhost:3000`. |
-| `npm run build` | Compiles and builds the Next.js application for production. |
-| `npm run start` | Runs the compiled production server. |
-| `npm run lint` | Runs Biome code linter (`biome check`) across the codebase. |
-| `npm run format` | Runs Biome code formatter (`biome format --write`) to auto-format code. |
+| `pnpm run dev` | Starts the Next.js development server on `http://localhost:3000`. |
+| `pnpm run build` | Compiles and builds the Next.js application for production. |
+| `pnpm run start` | Runs the compiled production server. |
+| `pnpm run lint` | Runs Biome code linter (`biome check`) across the codebase. |
+| `pnpm run format` | Runs Biome code formatter (`biome format --write`) to auto-format code. |
 
 ---
 
@@ -374,7 +372,7 @@ sequenceDiagram
 - **Domain-Driven Module Pattern:** Features are grouped under `src/modules/<domain>/` containing domain-specific `components/`, `queries.ts`, and `actions.ts`.
 - **Server Actions for Data Mutations:** Mutations rely on Next.js Server Actions with active session checking rather than REST endpoints.
 - **Two-Layer Route Protection:** Session validation at the route group level (`(protected)/layout.tsx`) combined with resource membership enforcement (`[workspace]/layout.tsx`).
-- **Code Quality & Formatting:** Code standards are enforced using [Biome](https://biomejs.dev/) (`npm run lint`, `npm run format`).
+- **Code Quality & Formatting:** Code standards are enforced using [Biome](https://biomejs.dev/) (`pnpm run lint`, `pnpm run format`).
 
 ---
 
@@ -383,8 +381,8 @@ sequenceDiagram
 To contribute to TaskFlow:
 
 1. Fork the repository and create a feature branch (`git checkout -b feature/your-feature-name`).
-2. Adhere to code quality rules by running Biome formatting and linting (`npm run format` & `npm run lint`).
-3. Verify TypeScript type safety without compilation errors (`npx tsc --noEmit`).
+2. Adhere to code quality rules by running Biome formatting and linting (`pnpm run format` & `pnpm run lint`).
+3. Verify TypeScript type safety without compilation errors (`pnpm dlx tsc --noEmit`).
 4. Commit changes following [Conventional Commits](https://www.conventionalcommits.org/) standards (e.g., `feat(workspace): description`).
 5. Open a Pull Request against the `main` branch.
 
