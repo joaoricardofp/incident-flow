@@ -1,25 +1,28 @@
+import { cache } from "react";
 import type { Role } from "@/generated/prisma/enums";
 import prisma from "@/lib/prisma";
 
-export async function getWorkspaceBySlug({
-  slug,
-}: {
-  slug: string;
-}): Promise<{ id: string; name: string } | null> {
-  const findBySlug = await prisma.workspace.findUnique({
-    where: {
-      slug,
-    },
-    select: {
-      id: true,
-      name: true,
-    },
-  });
+export const getWorkspaceBySlug = cache(
+  async ({
+    slug,
+  }: {
+    slug: string;
+  }): Promise<{ id: string; name: string } | null> => {
+    const workspace = await prisma.workspace.findUnique({
+      where: {
+        slug,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
 
-  if (!findBySlug) return null;
+    if (!workspace) return null;
 
-  return { id: findBySlug.id, name: findBySlug.name };
-}
+    return workspace;
+  },
+);
 
 type UserWorkspaces = {
   id: string;

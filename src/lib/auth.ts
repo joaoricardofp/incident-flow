@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { betterAuth } from "better-auth";
 import { headers } from "next/headers";
@@ -22,6 +23,6 @@ export const auth = betterAuth({
 
 export type Session = typeof auth.$Infer.Session;
 
-export async function getSession(): Promise<Session | null> {
+export const getSession = cache(async (): Promise<Session | null> => {
   return await auth.api.getSession({ headers: await headers() });
-}
+});
