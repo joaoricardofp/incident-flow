@@ -1,7 +1,7 @@
-import { cache } from "react";
 import { prismaAdapter } from "@better-auth/prisma-adapter";
 import { betterAuth } from "better-auth";
 import { headers } from "next/headers";
+import { cache } from "react";
 import prisma from "./prisma";
 
 export const auth = betterAuth({
