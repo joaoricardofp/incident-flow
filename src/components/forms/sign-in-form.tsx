@@ -3,11 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import z from "zod";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { GitHubIcon, GoogleIcon } from "../icons";
+import { GitHubIcon } from "../icons";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
@@ -21,6 +21,7 @@ import {
 import { Input } from "../ui/input";
 import { InputPassword } from "../ui/input-password";
 import { Spinner } from "../ui/spinner";
+import { signInWithGitHub } from "./github-sign-in";
 
 const schema = z.object({
   email: z.email("Invalid email address."),
@@ -46,6 +47,8 @@ export function SignInForm({
   const router = useRouter();
 
   function onSubmit(data: formData) {
+    if (isPending) return;
+
     startTransition(async () => {
       await authClient.signIn.email(
         {
@@ -55,10 +58,17 @@ export function SignInForm({
         },
         {
           onError: (ctx) => {
-            toast.error(ctx.error.message);
+            toast.add({
+              type: "error",
+              description: ctx.error.message,
+              priority: "high",
+            });
           },
           onSuccess: () => {
-            toast.success("Logged in successfully!");
+            toast.add({
+              type: "success",
+              description: "Logged in successfully!",
+            });
             router.push("/dashboard");
           },
         },
@@ -75,14 +85,17 @@ export function SignInForm({
         <CardContent>
           <form id="sign-in-form" onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
-              <Field className="grid grid-cols-2 gap-2">
-                <Button variant="outline" type="button">
-                  <GoogleIcon />
-                  Google
-                </Button>
-                <Button variant="outline" type="button">
+              <Field>
+                <Button
+                  variant="outline"
+                  type="button"
+                  disabled={isPending}
+                  onClick={() =>
+                    signInWithGitHub({ isPending, startTransition })
+                  }
+                >
                   <GitHubIcon />
-                  GitHub
+                  {isPending ? <Spinner /> : "Continue with GitHub"}
                 </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
@@ -110,7 +123,10 @@ export function SignInForm({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel>Password</FieldLabel>
+                    <FieldLabel>
+                      Password
+                      <a className="ml-auto text-sm text-primary underline" href="/reset-password">Forgot password?</a>
+                    </FieldLabel>
                     <InputPassword
                       {...field}
                       aria-invalid={fieldState.invalid}
@@ -123,7 +139,7 @@ export function SignInForm({
               />
               <Field>
                 <Button id="sign-in-form" type="submit" disabled={isPending}>
-                  {isPending ? <Spinner /> : "Create Account"}
+                  {isPending ? <Spinner /> : "Sign In"}
                 </Button>
                 <FieldDescription className="text-center">
                   Don't have an account? <a href="/sign-up">Sign up</a>

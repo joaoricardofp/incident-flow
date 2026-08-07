@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/toast";
 import { Severity } from "@/generated/prisma/enums";
 import { createIncident } from "../actions";
 import { type IncidentSchema, incidentSchema } from "../schema";
@@ -55,12 +55,19 @@ export function CreateIncidentForm({
       const result = await createIncident({ workspaceId }, data);
 
       if (!result.success) {
-        toast.error(result.error);
+        toast.add({
+          type: "error",
+          description: result.error,
+          priority: "high",
+        });
         return;
       }
 
       form.reset();
-      toast.success("Incident created successfully.");
+      toast.add({
+        type: "success",
+        description: "Incident created successfully.",
+      });
       router.refresh();
       onSuccess();
     });

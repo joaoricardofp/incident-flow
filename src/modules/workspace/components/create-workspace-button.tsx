@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "@/components/ui/toast";
 import { createWorkspace } from "../actions";
 
 export function CreateWorkspaceButton() {
@@ -17,7 +17,11 @@ export function CreateWorkspaceButton() {
       if (result.success) {
         router.push(`/${result.slug}`);
       } else {
-        toast.error(result.error);
+        toast.add({
+          type: "error",
+          description: result.error,
+          priority: "high",
+        });
       }
     });
   }

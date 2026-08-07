@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -93,7 +93,9 @@ export function Navigation({
                     await authClient.signOut({
                       fetchOptions: {
                         onSuccess: () => {
-                          toast("Logged out successfully");
+                          toast.add({
+                            description: "Logged out successfully",
+                          });
                           router.push("/sign-in");
                         },
                       },

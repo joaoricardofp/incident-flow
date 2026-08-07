@@ -3,11 +3,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { z } from "zod";
+import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { GitHubIcon, GoogleIcon } from "../icons";
+import { GitHubIcon } from "../icons";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
@@ -21,6 +21,7 @@ import {
 import { Input } from "../ui/input";
 import { InputPassword } from "../ui/input-password";
 import { Spinner } from "../ui/spinner";
+import { signInWithGitHub } from "./github-sign-in";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required."),
@@ -48,6 +49,8 @@ export function SignUpForm({
   const router = useRouter();
 
   function onSubmit(data: formData) {
+    if (isPending) return;
+
     startTransition(async () => {
       await authClient.signUp.email(
         {
@@ -58,10 +61,18 @@ export function SignUpForm({
         },
         {
           onError: (ctx) => {
-            toast.error(ctx.error.message);
+            toast.add({
+              type: "error",
+              description: ctx.error.message,
+              priority: "high",
+            });
           },
           onSuccess: () => {
-            toast.success("Account created successfully!");
+            toast.add({
+              type: "success",
+              title: "Account created successfully!",
+              description: "Verification email sent. Please check your inbox.",
+            });
             router.push("/dashboard");
           },
         },
@@ -78,14 +89,17 @@ export function SignUpForm({
         <CardContent>
           <form id="sign-up-form" onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
-              <Field className="grid grid-cols-2 gap-2">
-                <Button variant="outline" type="button">
-                  <GoogleIcon />
-                  Google
-                </Button>
-                <Button variant="outline" type="button">
+              <Field>
+                <Button
+                  variant="outline"
+                  type="button"
+                  disabled={isPending}
+                  onClick={() =>
+                    signInWithGitHub({ isPending, startTransition })
+                  }
+                >
                   <GitHubIcon />
-                  GitHub
+                  {isPending ? <Spinner /> : "Continue with GitHub"}
                 </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
