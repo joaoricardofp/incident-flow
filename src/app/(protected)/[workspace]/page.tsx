@@ -20,11 +20,11 @@ export default async function WorkspacePage({
 }: {
   params: Promise<{ workspace: string }>;
 }) {
-  const session = await getSession();
+  const [session, resolvedParams] = await Promise.all([getSession(), params]);
 
   if (!session) redirect("/sign-in");
 
-  const { workspace: slug } = await params;
+  const { workspace: slug } = resolvedParams;
   const workspace = await getWorkspaceBySlug({ slug });
 
   if (!workspace) notFound();
