@@ -4,16 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heading, Text } from "@/components/ui/typography";
 import { getSession } from "@/lib/auth";
+import { formatEnum } from "@/lib/format-enum";
 import { getIncidentById } from "@/modules/incident/queries";
 import { getWorkspaceBySlug } from "@/modules/workspace/queries";
-
-function formatEnum(value: string) {
-  return value
-    .toLowerCase()
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
+import { getTimelineByIncident } from "@/modules/timeline/queries";
+import { TimelineList } from "@/modules/timeline/components/timeline-list";
 
 export default async function IncidentPage({
   params,
@@ -29,10 +24,16 @@ export default async function IncidentPage({
 
   if (!workspace) notFound();
 
-  const incident = await getIncidentById({
-    incidentId: id,
-    workspaceId: workspace.id,
-  });
+  const [incident, timeline] = await Promise.all([
+    getIncidentById({
+      incidentId: id,
+      workspaceId: workspace.id,
+    }),
+    getTimelineByIncident({
+      incidentId: id,
+      workspaceId: workspace.id,
+    }),
+  ]);
 
   if (!incident) notFound();
 
@@ -80,6 +81,9 @@ export default async function IncidentPage({
             </CardContent>
           </Card>
         </section>
+        <div className="flex flex-col gap-4">
+          <TimelineList items={timeline} />
+        </div>
       </main>
     </>
   );
