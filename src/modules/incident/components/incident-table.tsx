@@ -7,20 +7,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatEnum } from "@/lib/format-enum";
 import type { IncidentSummary } from "../queries";
 
 type IncidentTableProps = {
   incidents: IncidentSummary[];
   workspaceSlug: string;
 };
-
-function formatEnum(value: string) {
-  return value
-    .toLowerCase()
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
 
 export function IncidentTable({
   incidents,
