@@ -8,6 +8,15 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Fragment } from "react";
+import {
+  Breadcrumb,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbItem as BreadcrumbListItem,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { toast } from "@/components/ui/toast";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -23,10 +32,21 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
+export type BreadcrumbItem =
+  | {
+      label: string;
+      href: string;
+    }
+  | {
+      label: string;
+      href?: never;
+    };
+
 type NavigationProps = React.ComponentProps<"nav"> & {
   name: string;
   email: string;
   image?: string | null | undefined;
+  breadcrumb?: BreadcrumbItem[];
 };
 
 export function Navigation({
@@ -35,6 +55,7 @@ export function Navigation({
   name,
   email,
   image,
+  breadcrumb,
   ...props
 }: NavigationProps) {
   const router = useRouter();
@@ -49,6 +70,35 @@ export function Navigation({
     >
       <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
         {children}
+        {breadcrumb && breadcrumb.length > 0 && (
+          <Breadcrumb className="max-sm:hidden">
+            <BreadcrumbList>
+              {breadcrumb.map((item, index) => {
+                const isLastItem = index === breadcrumb.length - 1;
+                const key = item.href
+                  ? `${item.href}-${item.label}`
+                  : item.label;
+
+                return (
+                  <Fragment key={key}>
+                    <BreadcrumbListItem>
+                      {isLastItem ? (
+                        <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink
+                          render={
+                            <Link href={item.href as string}>{item.label}</Link>
+                          }
+                        />
+                      )}
+                    </BreadcrumbListItem>
+                    {!isLastItem && <BreadcrumbSeparator />}
+                  </Fragment>
+                );
+              })}
+            </BreadcrumbList>
+          </Breadcrumb>
+        )}
         <div className="ml-auto flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger

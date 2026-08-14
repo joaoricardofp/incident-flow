@@ -6,9 +6,9 @@ import { Heading, Text } from "@/components/ui/typography";
 import { getSession } from "@/lib/auth";
 import { formatEnum } from "@/lib/format-enum";
 import { getIncidentById } from "@/modules/incident/queries";
-import { getWorkspaceBySlug } from "@/modules/workspace/queries";
-import { getTimelineByIncident } from "@/modules/timeline/queries";
 import { TimelineList } from "@/modules/timeline/components/timeline-list";
+import { getTimelineByIncident } from "@/modules/timeline/queries";
+import { getWorkspaceBySlug } from "@/modules/workspace/queries";
 
 export default async function IncidentPage({
   params,
@@ -43,12 +43,14 @@ export default async function IncidentPage({
         name={session.user.name}
         email={session.user.email}
         image={session.user.image}
-      >
-        <Heading className="text-sm font-medium">{workspace.name}</Heading>
-      </Navigation>
+        breadcrumb={[
+          { label: workspace.name, href: `/${slug}` },
+          { label: incident.title },
+        ]}
+      />
       <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
         <section className="flex flex-wrap items-center gap-3">
-          <Heading variant="h2">{incident.title}</Heading>
+          <Heading>{incident.title}</Heading>
           <Badge variant="outline">{formatEnum(incident.severity)}</Badge>
           <Badge>{formatEnum(incident.status)}</Badge>
         </section>

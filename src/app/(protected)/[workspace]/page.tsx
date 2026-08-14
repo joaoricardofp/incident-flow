@@ -39,12 +39,11 @@ export default async function WorkspacePage({
         name={session.user.name}
         email={session.user.email}
         image={session.user.image}
-      >
-        <Heading className="text-sm font-medium">{workspace.name}</Heading>
-      </Navigation>
+        breadcrumb={[{ label: workspace.name }]}
+      />
       <div className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
         <div className="flex items-center flex-wrap">
-          <Heading variant="h2">Incidents</Heading>
+          <Heading>Your Incidents</Heading>
           <div className="ml-auto">
             <CreateIncidentDialog workspaceId={workspace.id} />
           </div>
