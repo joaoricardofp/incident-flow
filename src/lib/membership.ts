@@ -1,5 +1,6 @@
 import type { Role } from "@/generated/prisma/enums";
 import prisma from "./prisma";
+import { cache } from "react";
 
 type MembershipParams = {
   userId: string;
@@ -17,25 +18,27 @@ export class AuthorizationError extends Error {
   }
 }
 
-export async function getMembership({
-  userId,
-  workspaceId,
-}: MembershipParams): Promise<{ role: Role } | null> {
-  const membership = await prisma.membership.findUnique({
-    where: {
-      userId_workspaceId: {
-        userId,
-        workspaceId,
+export const getMembership = cache(
+  async ({
+    userId,
+    workspaceId,
+  }: MembershipParams): Promise<{ role: Role } | null> => {
+    const membership = await prisma.membership.findUnique({
+      where: {
+        userId_workspaceId: {
+          userId,
+          workspaceId,
+        },
       },
-    },
-  });
+    });
 
-  if (!membership) return null;
+    if (!membership) return null;
 
-  return {
-    role: membership.role,
-  };
-}
+    return {
+      role: membership.role,
+    };
+  },
+);
 
 const roleLevel: Record<Role, number> = {
   VIEWER: 1,

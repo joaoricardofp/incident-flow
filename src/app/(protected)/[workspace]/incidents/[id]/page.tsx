@@ -6,9 +6,11 @@ import { Heading, Text } from "@/components/ui/typography";
 import { getSession } from "@/lib/auth";
 import { formatEnum } from "@/lib/format-enum";
 import { getIncidentById } from "@/modules/incident/queries";
+import { CreateCommentDialog } from "@/modules/timeline/components/create-comment-dialog";
 import { TimelineList } from "@/modules/timeline/components/timeline-list";
 import { getTimelineByIncident } from "@/modules/timeline/queries";
 import { getWorkspaceBySlug } from "@/modules/workspace/queries";
+import { getMembership } from "@/lib/membership";
 
 export default async function IncidentPage({
   params,
@@ -24,13 +26,17 @@ export default async function IncidentPage({
 
   if (!workspace) notFound();
 
-  const [incident, timeline] = await Promise.all([
+  const [incident, timeline, membership] = await Promise.all([
     getIncidentById({
       incidentId: id,
       workspaceId: workspace.id,
     }),
     getTimelineByIncident({
       incidentId: id,
+      workspaceId: workspace.id,
+    }),
+    getMembership({
+      userId: session.user.id,
       workspaceId: workspace.id,
     }),
   ]);
@@ -84,7 +90,17 @@ export default async function IncidentPage({
           </Card>
         </section>
         <div className="flex flex-col gap-4">
-          <Heading variant="h2">Timeline</Heading>
+          <div className="flex items-start flex-wrap">
+            <Heading variant="h2">Timeline</Heading>
+            {membership?.role === "ADMIN" && (
+              <div className="ml-auto">
+                <CreateCommentDialog
+                  incidentId={incident.id}
+                  workspaceId={workspace.id}
+                />
+              </div>
+            )}
+          </div>
           <TimelineList items={timeline} />
         </div>
       </main>

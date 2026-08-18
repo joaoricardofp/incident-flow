@@ -10,13 +10,12 @@ export default async function WorkspaceLayout({
   children: React.ReactNode;
   params: Promise<{ workspace: string }>;
 }) {
-  const session = await getSession();
+  const [session, resolvedParams] = await Promise.all([getSession(), params]);
 
   if (!session) redirect("/sign-in");
 
-  const { workspace } = await params;
-
-  const workspaceBySlug = await getWorkspaceBySlug({ slug: workspace });
+  const { workspace: slug } = resolvedParams;
+  const workspaceBySlug = await getWorkspaceBySlug({ slug });
 
   if (!workspaceBySlug) notFound();
 

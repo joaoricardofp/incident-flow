@@ -73,7 +73,7 @@ export async function getTimelineByIncident({
       },
     },
     orderBy: {
-      createdAt: "asc",
+      createdAt: "desc",
     },
   });
 
