@@ -84,6 +84,7 @@ export default async function IncidentPage({
           </Card>
         </section>
         <div className="flex flex-col gap-4">
+          <Heading variant="h2">Timeline</Heading>
           <TimelineList items={timeline} />
         </div>
       </main>

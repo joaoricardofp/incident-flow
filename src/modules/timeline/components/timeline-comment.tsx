@@ -14,7 +14,7 @@ export function TimelineComment({ item }: TimelineCommentProps) {
       <Avatar size="sm">
         <AvatarFallback>{authorName.charAt(0)}</AvatarFallback>
       </Avatar>
-      <div className="flex min-w-0 flex-1 flex-col gap-1">
+      <div className="rounded-lg border bg-muted/50 px-3 py-2 flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
           <span className="text-sm font-medium">{authorName}</span>
           <time
@@ -24,7 +24,7 @@ export function TimelineComment({ item }: TimelineCommentProps) {
             {item.createdAt.toLocaleDateString()}
           </time>
         </div>
-        <div className="rounded-lg border bg-muted/50 px-3 py-2">
+        <div>
           <Text className="text-sm leading-6">{item.message}</Text>
         </div>
       </div>
