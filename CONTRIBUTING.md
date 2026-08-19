@@ -1,6 +1,6 @@
-# Contributing to TaskFlow
+# Contributing to IncidentFlow
 
-First off, thank you for considering contributing to **TaskFlow**! It's contributions like yours that make TaskFlow a powerful incident management and postmortem platform for engineering teams.
+First off, thank you for considering contributing to **IncidentFlow**! It's contributions like yours that make IncidentFlow a powerful incident management and postmortem platform for engineering teams.
 
 This document outlines a set of guidelines and best practices to help you get started with contributing.
 
@@ -46,8 +46,8 @@ Ensure you have the following installed on your machine:
 1. **Fork and Clone the Repository**
 
    ```bash
-   git clone https://github.com/your-username/task-flow.git
-   cd task-flow
+   https://github.com/joaoricardofp/incident-flow.git
+   cd incident-flow
    ```
 
 2. **Install Dependencies**
@@ -61,7 +61,7 @@ Ensure you have the following installed on your machine:
    Copy or create a `.env` file in the project root:
 
    ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/taskflow_db"
+   DATABASE_URL="postgresql://user:password@localhost:5432/incidentflow_db"
    BETTER_AUTH_SECRET="your-32-character-secret-key-here"
    BETTER_AUTH_URL="http://localhost:3000"
    # Optional: GitHub OAuth & Liveblocks keys
