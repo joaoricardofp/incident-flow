@@ -10,11 +10,11 @@ export function TimelineComment({ item }: TimelineCommentProps) {
   const authorName = item.author?.name ?? "Deleted user";
 
   return (
-    <article className="flex gap-3">
-      <Avatar size="sm">
+    <article className="relative flex gap-3 pl-1 before:absolute before:top-8 before:bottom-[-1.5rem] before:left-4 before:w-px before:bg-border last:before:hidden">
+      <Avatar size="sm" className="relative shrink-0 ring-4 ring-card">
         <AvatarFallback>{authorName.charAt(0)}</AvatarFallback>
       </Avatar>
-      <div className="rounded-lg border bg-muted/50 px-3 py-2 flex min-w-0 flex-1 flex-col gap-1">
+      <div className="flex min-w-0 flex-1 flex-col gap-2 rounded-lg border bg-muted/50 px-3 py-2.5">
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
           <span className="text-sm font-medium">{authorName}</span>
           <time
