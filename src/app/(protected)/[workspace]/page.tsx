@@ -43,7 +43,7 @@ export default async function WorkspacePage({
       />
       <div className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
         <div className="flex items-center flex-wrap">
-          <Heading>Your Incidents</Heading>
+          <Heading>Incidents</Heading>
           <div className="ml-auto">
             <CreateIncidentDialog workspaceId={workspace.id} />
           </div>

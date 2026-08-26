@@ -21,7 +21,7 @@ import { type TimelineCommentSchema, timelineCommentSchema } from "../schema";
 type CreateCommentFormProps = {
   incidentId: string;
   workspaceId: string;
-  onSuccess: () => void;
+  onSuccess?: () => void;
 };
 
 type CreateCommentFormValues = z.input<typeof timelineCommentSchema>;
@@ -62,35 +62,38 @@ export function CreateCommentForm({
 
       form.reset();
       router.refresh();
-      onSuccess();
+      onSuccess?.();
     });
   }
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <FieldGroup>
+      <FieldGroup className="gap-3">
         <Controller
           control={form.control}
           name="message"
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="timeline-comment-message">
-                Comment
+                <span className="sr-only">
+                  Add an update about the incident
+                </span>
               </FieldLabel>
               <Textarea
                 {...field}
                 aria-invalid={fieldState.invalid}
                 disabled={isPending}
                 id="timeline-comment-message"
-                placeholder="Add a comment"
+                className="min-h-28 resize-y"
+                placeholder="Add an update about the incident..."
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
           )}
         />
-        <Field>
+        <Field className="items-end">
           <Button type="submit" disabled={isPending}>
-            {isPending ? <Spinner /> : "Comment"}
+            {isPending ? <Spinner /> : "Publish"}
           </Button>
         </Field>
       </FieldGroup>
