@@ -1,5 +1,3 @@
-import { ActivityIcon, ArrowLeftIcon } from "lucide-react";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Navigation } from "@/components/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -9,11 +7,34 @@ import { Heading, Text } from "@/components/ui/typography";
 import { getSession } from "@/lib/auth";
 import { formatEnum } from "@/lib/format-enum";
 import { getMembership } from "@/lib/membership";
+import { IncidentDuration } from "@/modules/incident/components/incident-duration";
+import { UpdateStatusControl } from "@/modules/incident/components/update-status-control";
 import { getIncidentById } from "@/modules/incident/queries";
 import { CreateCommentForm } from "@/modules/timeline/components/create-comment-form";
 import { TimelineList } from "@/modules/timeline/components/timeline-list";
 import { getTimelineByIncident } from "@/modules/timeline/queries";
 import { getWorkspaceBySlug } from "@/modules/workspace/queries";
+
+function formatIncidentDate(date: Date) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).formatToParts(date);
+  const day = parts.find((part) => part.type === "day")?.value ?? "";
+  const month = parts.find((part) => part.type === "month")?.value ?? "";
+  const year = parts.find((part) => part.type === "year")?.value ?? "";
+  const time = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).format(date);
+
+  const displayYear =
+    date.getFullYear() === new Date().getFullYear() ? "" : ` ${year}`;
+
+  return `${day} ${month}${displayYear} · ${time}`;
+}
 
 export default async function IncidentPage({
   params,
@@ -101,10 +122,18 @@ export default async function IncidentPage({
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
-                <div className="flex items-center justify-between gap-4">
-                  <Text variant="small">Status</Text>
-                  <Badge>{formatEnum(incident.status)}</Badge>
-                </div>
+                {membership?.role === "ADMIN" ? (
+                  <UpdateStatusControl
+                    incidentId={incident.id}
+                    workspaceId={workspace.id}
+                    currentStatus={incident.status}
+                  />
+                ) : (
+                  <div className="flex items-center justify-between gap-4">
+                    <Text variant="small">Status</Text>
+                    <Badge>{formatEnum(incident.status)}</Badge>
+                  </div>
+                )}
                 <div className="flex items-center justify-between gap-4">
                   <Text variant="small">Severity</Text>
                   <Badge variant="outline">
@@ -115,24 +144,28 @@ export default async function IncidentPage({
                 <div className="flex items-center justify-between gap-4">
                   <Text variant="small">Opened at</Text>
                   <Text className="mt-0 text-right text-sm leading-5">
-                    {incident.createdAt.toLocaleDateString()}
+                    {formatIncidentDate(incident.createdAt)}
                   </Text>
                 </div>
                 <div className="flex items-center justify-between gap-4">
                   <Text variant="small">Closed at</Text>
                   <Text className="mt-0 text-right text-sm leading-5">
-                    {incident.resolvedAt?.toLocaleDateString() ?? "-"}
+                    {incident.resolvedAt
+                      ? formatIncidentDate(incident.resolvedAt)
+                      : "-"}
                   </Text>
                 </div>
                 <div className="flex items-center justify-between gap-4">
-                  <Text variant="small">Created by</Text>
+                  <Text variant="small">Duration</Text>
                   <Text className="mt-0 text-right text-sm leading-5">
-                    {incident.createdBy?.name ?? "Deleted user"}
+                    <IncidentDuration
+                      openedAt={incident.createdAt}
+                      resolvedAt={incident.resolvedAt}
+                    />
                   </Text>
                 </div>
               </CardContent>
             </Card>
-
             <Card>
               <CardHeader>
                 <CardTitle className="text-xs font-semibold tracking-wider uppercase">
