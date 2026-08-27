@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
-import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -24,8 +23,6 @@ type CreateCommentFormProps = {
   onSuccess?: () => void;
 };
 
-type CreateCommentFormValues = z.input<typeof timelineCommentSchema>;
-
 export function CreateCommentForm({
   incidentId,
   workspaceId,
@@ -33,11 +30,7 @@ export function CreateCommentForm({
 }: CreateCommentFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const form = useForm<
-    CreateCommentFormValues,
-    undefined,
-    TimelineCommentSchema
-  >({
+  const form = useForm<TimelineCommentSchema>({
     resolver: zodResolver(timelineCommentSchema),
     defaultValues: {
       message: "",
