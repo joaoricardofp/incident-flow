@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 type IncidentDurationProps = {
   openedAt: Date;
   resolvedAt: Date | null;
+  initialTime: Date;
 };
 
 function formatDuration(start: Date, end: Date) {
@@ -30,8 +31,9 @@ function formatDuration(start: Date, end: Date) {
 export function IncidentDuration({
   openedAt,
   resolvedAt,
+  initialTime,
 }: IncidentDurationProps) {
-  const [currentTime, setCurrentTime] = useState(() => new Date());
+  const [currentTime, setCurrentTime] = useState(initialTime);
 
   useEffect(() => {
     if (resolvedAt) {

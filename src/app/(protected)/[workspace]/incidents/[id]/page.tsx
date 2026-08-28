@@ -58,6 +58,8 @@ export default async function IncidentPage({
 
   if (!incident) notFound();
 
+  const initialTime = new Date();
+
   return (
     <>
       <Navigation
@@ -164,6 +166,7 @@ export default async function IncidentPage({
                     <IncidentDuration
                       openedAt={incident.createdAt}
                       resolvedAt={incident.resolvedAt}
+                      initialTime={initialTime}
                     />
                   </Text>
                 </div>
