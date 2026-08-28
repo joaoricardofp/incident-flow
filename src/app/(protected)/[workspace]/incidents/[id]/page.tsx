@@ -72,19 +72,16 @@ export default async function IncidentPage({
       <main className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
         <header className="flex flex-col gap-4">
           <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
               <Heading className="max-w-4xl text-3xl leading-tight sm:text-4xl">
                 {incident.title}
               </Heading>
-              <Text variant="muted" className="font-mono">
-                {incident.id}
-              </Text>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="outline">{formatEnum(incident.severity)}</Badge>
+                <Badge>{formatEnum(incident.status)}</Badge>
+              </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="outline">{formatEnum(incident.severity)}</Badge>
-              <Badge>{formatEnum(incident.status)}</Badge>
-            </div>
-            <Text variant="lead" className="max-w-3xl">
+            <Text variant="muted" className="text-sm max-w-3xl">
               {incident.description ?? "No description provided."}
             </Text>
           </div>
@@ -122,6 +119,12 @@ export default async function IncidentPage({
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex flex-col gap-4">
+                <div className="flex items-center justify-between gap-4">
+                  <Text variant="small">Id</Text>
+                  <Text variant="muted" className="font-mono">
+                    {incident.id}
+                  </Text>
+                </div>
                 {membership?.role === "ADMIN" ? (
                   <UpdateStatusControl
                     incidentId={incident.id}

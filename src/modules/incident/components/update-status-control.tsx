@@ -91,7 +91,7 @@ export function UpdateStatusControl({
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="incident-status">Status</FieldLabel>
               <Select
-                value={field.value}
+                value={formatEnum(field.value)}
                 onValueChange={field.onChange}
                 disabled={isPending}
               >
