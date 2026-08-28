@@ -1,21 +1,19 @@
 "use server";
 
-import { z } from "zod";
 import { Status, TimelineType } from "@/generated/prisma/enums";
 import { getSession } from "@/lib/auth";
 import { AuthorizationError, requireMembership } from "@/lib/membership";
 import prisma from "@/lib/prisma";
 import { createTimelineEntry } from "@/modules/timeline/service";
-import { type IncidentSchema, incidentSchema } from "./schema";
+import {
+  type IncidentSchema,
+  type UpdateStatusSchema,
+  incidentSchema,
+  updateStatusSchema,
+} from "./schema";
 
 type CreateIncidentResult =
   { success: true; incidentId: string } | { success: false; error: string };
-
-const updateStatusSchema = z.object({
-  status: z.enum(Status),
-});
-
-export type UpdateStatusSchema = z.infer<typeof updateStatusSchema>;
 
 type UpdateIncidentStatusResult =
   { success: true; noop?: true } | { success: false; error: string };
