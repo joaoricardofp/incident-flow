@@ -35,7 +35,7 @@ export type SeverityChangedTimelineItem = TimelineItemBase & {
 
 export type FallbackTimelineItem = TimelineItemBase & {
   type: "MALFORMED";
-  originalType: TimelineType;
+  originalType: string;
   message: string | null;
   metadata: null;
 };
@@ -158,8 +158,15 @@ export async function getTimelineByIncident({
         };
       }
       default: {
-        const exhaustiveCheck: never = entry.type;
-        return exhaustiveCheck;
+        return {
+          id: entry.id,
+          type: "MALFORMED",
+          originalType: String(entry.type),
+          message: entry.message,
+          metadata: null,
+          createdAt: entry.createdAt,
+          author: entry.author,
+        };
       }
     }
   });
