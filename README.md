@@ -305,8 +305,15 @@ Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Running Tests
 
-> [!NOTE]
-> **Test Suite Status:** Currently, **no automated test suite** (such as Jest, Vitest, Cypress, or Playwright) is configured or present in the repository. Testing frameworks and scripts will be introduced as the core feature set stabilizes.
+The automated suite uses Vitest. Unit tests exercise domain rules without external services, while integration tests execute Server Actions against a dedicated PostgreSQL database.
+
+Create a local `.env.test` from `.env.test.example` and set `DATABASE_URL_TEST` to a database that is separate from development. Apply the Prisma migrations to that database before running the integration suite.
+
+```bash
+pnpm test
+```
+
+The test setup never falls back to `DATABASE_URL`, so a missing `DATABASE_URL_TEST` fails integration tests instead of touching development data. Use `pnpm test:watch` for watch mode.
 
 ---
 
@@ -319,6 +326,8 @@ The following scripts are defined in `package.json`:
 | `pnpm run dev` | Starts the Next.js development server on `http://localhost:3000`. |
 | `pnpm run build` | Compiles and builds the Next.js application for production. |
 | `pnpm run start` | Runs the compiled Next.js production server. |
+| `pnpm test` | Runs the Vitest unit and integration test suite. |
+| `pnpm test:watch` | Runs Vitest in watch mode. |
 | `pnpm run lint` | Runs Biome code linter (`biome check`) across the codebase. |
 | `pnpm run format` | Runs Biome code formatter (`biome format --write`) to auto-format files. |
 
