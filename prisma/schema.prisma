@@ -86,6 +86,7 @@ model Workspace {
   id          String       @id @default(cuid())
   name        String
   slug        String       @unique
+  inviteToken String       @unique
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   memberships Membership[]
