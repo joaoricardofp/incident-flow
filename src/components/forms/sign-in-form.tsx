@@ -1,6 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
@@ -45,6 +45,9 @@ export function SignInForm({
 
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const inviteToken = searchParams.get("inviteToken");
 
   function onSubmit(data: formData) {
     if (isPending) return;
@@ -54,7 +57,7 @@ export function SignInForm({
         {
           email: data.email,
           password: data.password,
-          callbackURL: "/dashboard",
+          callbackURL: inviteToken ? `/invite/${inviteToken}` : "/dashboard",
         },
         {
           onError: (ctx) => {
@@ -69,6 +72,13 @@ export function SignInForm({
               type: "success",
               description: "Logged in successfully!",
             });
+
+            if (inviteToken) {
+              router.push(`/invite/${inviteToken}`);
+
+              return;
+            }
+
             router.push("/dashboard");
           },
         },
@@ -142,7 +152,7 @@ export function SignInForm({
                   {isPending ? <Spinner /> : "Sign In"}
                 </Button>
                 <FieldDescription className="text-center">
-                  Don't have an account? <a href="/sign-up">Sign up</a>
+                  Don't have an account? <a href={inviteToken ? `/sign-up?inviteToken=${inviteToken}` : "/sign-up"}>Sign up</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>
