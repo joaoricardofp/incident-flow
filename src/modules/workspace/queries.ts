@@ -7,7 +7,7 @@ export const getWorkspaceBySlug = cache(
     slug,
   }: {
     slug: string;
-  }): Promise<{ id: string; name: string } | null> => {
+  }): Promise<{ id: string; name: string; inviteToken: string } | null> => {
     const workspace = await prisma.workspace.findUnique({
       where: {
         slug,
@@ -15,6 +15,7 @@ export const getWorkspaceBySlug = cache(
       select: {
         id: true,
         name: true,
+        inviteToken: true,
       },
     });
 

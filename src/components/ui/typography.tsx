@@ -9,12 +9,12 @@ type LinkProps = React.ComponentPropsWithoutRef<"a"> & {
 
 function Link({ className, href, ...props }: LinkProps) {
   const base = cn(
-    "text-primary underline underline-offset-[3px] decoration-2 decoration-primary",
-    "hover:text-primary/80 hover:decoration-primary/80",
-    "transition-colors duration-75",
+    "transition-colors duration-150 ease-out",
+    "hover:text-primary/80",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2",
+    "active:text-primary",
     className,
   );
-
   if (href.startsWith("#")) {
     return <a href={href} className={base} {...props} />;
   } else if (href.startsWith("/")) {
