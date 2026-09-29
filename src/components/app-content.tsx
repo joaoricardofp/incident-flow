@@ -1,24 +1,29 @@
-import React from "react";
+import type React from "react";
 
-import { SidebarInset } from "./ui/sidebar";
+type AppShellContentProps =
+  | (React.ComponentProps<"main"> & { variant?: "header" })
+  | (React.ComponentProps<"div"> & { variant: "sidebar" });
 
-type AppShelContentProps = React.ComponentProps<"main"> & {
-  variant?: "header" | "sidebar";
-};
+function AppContent(props: AppShellContentProps) {
+  if (props.variant === "sidebar") {
+    const { children, variant: _variant, ...sidebarProps } = props;
 
-function AppContent({
-  variant = "header",
-  children,
-  ...props
-}: AppShelContentProps) {
-  if (variant === "sidebar") {
-    return <SidebarInset {...props}>{children}</SidebarInset>;
+    return (
+      <div
+        className="flex min-h-0 flex-1 flex-col"
+        {...sidebarProps}
+      >
+        {children}
+      </div>
+    );
   }
+
+  const { children, variant: _variant, ...mainProps } = props;
 
   return (
     <main
       className="mx-auto flex h-full w-full max-w-7xl flex-1 flex-col gap-4 rounded-xl"
-      {...props}
+      {...mainProps}
     >
       {children}
     </main>

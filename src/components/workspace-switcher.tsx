@@ -109,7 +109,8 @@ export function WorkspaceSwitcher({
               {hasWorkspaces ? (
                 workspaces.map((item) => {
                   const isCurrentWorkspace = item.id === workspace?.id;
-                  const isPendingWorkspace = item.id === pendingWorkspaceId;
+                  const isPendingWorkspace =
+                    isPending && item.id === pendingWorkspaceId;
 
                   return (
                     <DropdownMenuItem

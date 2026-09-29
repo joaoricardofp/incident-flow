@@ -1,6 +1,5 @@
 import { BugOffIcon } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
-import { Navigation } from "@/components/navigation";
 import {
   Empty,
   EmptyDescription,
@@ -35,7 +34,6 @@ export default async function WorkspacePage({
   });
 
   return (
-    <>
       <AppLayout user={session.user} breadcrumb={[{ label: workspace.name }]} workspaceId={workspace.id} workspaceSlug={slug} workspaceInviteToken={workspace.inviteToken}>
         <div className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
           <div className="flex items-center flex-wrap">
@@ -61,6 +59,5 @@ export default async function WorkspacePage({
           )}
         </div>
       </AppLayout>
-    </>
   );
 }

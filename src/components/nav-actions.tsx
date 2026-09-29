@@ -1,9 +1,8 @@
-"use client"
+"use client";
 
-import { Check, Copy, MoreHorizontalIcon } from "lucide-react"
-import { useState } from "react"
-
-import { Button } from "./ui/button"
+import { Check, Copy, MoreHorizontalIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "./ui/button";
 import {
   Popover,
   PopoverContent,
@@ -11,28 +10,43 @@ import {
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
-} from "./ui/popover"
-import { Input } from "./ui/input"
-import { toast } from "./ui/toast"
+} from "./ui/popover";
+import { Input } from "./ui/input";
+import { toast } from "./ui/toast";
 
-export function NavActions({ workspaceInviteToken }: { workspaceInviteToken?: string }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [copied, setCopied] = useState(false)
+export function NavActions({
+  workspaceInviteToken,
+}: {
+  workspaceInviteToken: string;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const configuredAppUrl =
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ?? "";
+  const [appUrl, setAppUrl] = useState(configuredAppUrl);
+
+  useEffect(() => {
+    if (!appUrl) setAppUrl(window.location.origin);
+  }, [appUrl]);
+
+  const inviteUrl = appUrl
+    ? `${appUrl}/invite/${workspaceInviteToken}`
+    : `/invite/${workspaceInviteToken}`;
 
   async function handleCopy() {
     try {
-      await navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_APP_URL}/invite/${workspaceInviteToken}` ?? "")
-      setCopied(true)
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopied(true);
 
       setTimeout(() => {
-        setCopied(false)
-      }, 2000)
-    } catch (error) {
+        setCopied(false);
+      }, 2000);
+    } catch {
       toast.add({
         type: "error",
         title: "Failed to copy invite token",
         description: "Failed to copy invite token to clipboard",
-      })
+      });
     }
   }
 
@@ -43,7 +57,7 @@ export function NavActions({ workspaceInviteToken }: { workspaceInviteToken?: st
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 data-[state=open]:bg-accent"
+            className="h-7 w-7 data-open:bg-accent"
           >
             <MoreHorizontalIcon />
           </Button>
@@ -62,17 +76,13 @@ export function NavActions({ workspaceInviteToken }: { workspaceInviteToken?: st
         </PopoverHeader>
 
         <div className="flex items-center gap-2">
-          <Input value={`${process.env.NEXT_PUBLIC_APP_URL}/invite/${workspaceInviteToken}`} disabled />
+          <Input value={inviteUrl} disabled />
 
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleCopy}
-          >
+          <Button variant="ghost" size="icon" onClick={handleCopy}>
             {copied ? <Check /> : <Copy />}
           </Button>
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

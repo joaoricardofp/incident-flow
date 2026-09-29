@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 
 import { SidebarTrigger } from "./ui/sidebar";
 import { Separator } from "./ui/separator";
@@ -71,9 +71,11 @@ function AppHeader({ breadcrumb, workspaceInviteToken }: AppHeaderProps) {
           </Breadcrumb>
         )}
       </div>
-      <div className="ml-auto px-6">
-        <NavActions workspaceInviteToken={workspaceInviteToken} />
-      </div>
+      {workspaceInviteToken ? (
+        <div className="ml-auto px-6">
+          <NavActions workspaceInviteToken={workspaceInviteToken} />
+        </div>
+      ) : null}
     </header>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 import { AppShell } from "../components/app-shell";
 import { AppContent } from "../components/app-content";

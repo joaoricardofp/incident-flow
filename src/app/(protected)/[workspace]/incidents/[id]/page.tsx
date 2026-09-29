@@ -1,5 +1,4 @@
 import { notFound, redirect } from "next/navigation";
-import { Navigation } from "@/components/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -71,6 +70,7 @@ export default async function IncidentPage({
       workspaceId={workspace.id}
       workspaceSlug={slug}
       incidentId={id}
+      workspaceInviteToken={workspace.inviteToken}
     >
       <div className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
         <header className="flex flex-col gap-4">

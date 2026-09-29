@@ -1,4 +1,5 @@
 import type { Severity, Status } from "@/generated/prisma/enums";
+import { cache } from "react";
 import prisma from "@/lib/prisma";
 
 export type IncidentSummary = {
@@ -10,29 +11,27 @@ export type IncidentSummary = {
   createdBy: { name: string } | null;
 };
 
-export async function getIncidentsByWorkspace({
-  workspaceId,
-}: {
-  workspaceId: string;
-}): Promise<IncidentSummary[]> {
-  return prisma.incident.findMany({
-    where: {
-      workspaceId,
-    },
-    select: {
-      id: true,
-      title: true,
-      status: true,
-      severity: true,
-      createdAt: true,
-      createdBy: {
-        select: {
-          name: true,
+export const getIncidentsByWorkspace = cache(
+  async ({ workspaceId }: { workspaceId: string }): Promise<IncidentSummary[]> => {
+    return prisma.incident.findMany({
+      where: {
+        workspaceId,
+      },
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        severity: true,
+        createdAt: true,
+        createdBy: {
+          select: {
+            name: true,
+          },
         },
       },
-    },
-  });
-}
+    });
+  },
+);
 
 export type IncidentByIdResult = IncidentSummary & {
   description: string | null;

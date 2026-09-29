@@ -32,31 +32,29 @@ type UserWorkspaces = {
   role: Role;
 };
 
-export async function getWorkspacesByUser({
-  userId,
-}: {
-  userId: string;
-}): Promise<UserWorkspaces[]> {
-  const workspaces = await prisma.membership.findMany({
-    where: {
-      userId,
-    },
-    select: {
-      workspace: {
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-        },
+export const getWorkspacesByUser = cache(
+  async ({ userId }: { userId: string }): Promise<UserWorkspaces[]> => {
+    const workspaces = await prisma.membership.findMany({
+      where: {
+        userId,
       },
-      role: true,
-    },
-  });
+      select: {
+        workspace: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          },
+        },
+        role: true,
+      },
+    });
 
-  return workspaces.map((item) => ({
-    id: item.workspace.id,
-    name: item.workspace.name,
-    slug: item.workspace.slug,
-    role: item.role,
-  }));
-}
+    return workspaces.map((item) => ({
+      id: item.workspace.id,
+      name: item.workspace.name,
+      slug: item.workspace.slug,
+      role: item.role,
+    }));
+  },
+);
