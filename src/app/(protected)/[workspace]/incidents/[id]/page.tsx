@@ -1,5 +1,4 @@
 import { notFound, redirect } from "next/navigation";
-import { Navigation } from "@/components/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -14,6 +13,7 @@ import { CreateCommentForm } from "@/modules/timeline/components/create-comment-
 import { TimelineList } from "@/modules/timeline/components/timeline-list";
 import { getTimelineByIncident } from "@/modules/timeline/queries";
 import { getWorkspaceBySlug } from "@/modules/workspace/queries";
+import AppLayout from "@/layouts/app-layout";
 
 function formatIncidentDate(date: Date) {
   const parts = new Intl.DateTimeFormat("en-US", {
@@ -61,17 +61,18 @@ export default async function IncidentPage({
   const initialTime = new Date();
 
   return (
-    <>
-      <Navigation
-        name={session.user.name}
-        email={session.user.email}
-        image={session.user.image}
-        breadcrumb={[
-          { label: workspace.name, href: `/${slug}` },
-          { label: incident.title },
-        ]}
-      />
-      <main className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
+    <AppLayout
+      user={session.user}
+      breadcrumb={[
+        { label: workspace.name, href: `/${slug}` },
+        { label: incident.title },
+      ]}
+      workspaceId={workspace.id}
+      workspaceSlug={slug}
+      incidentId={id}
+      workspaceInviteToken={workspace.inviteToken}
+    >
+      <div className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
         <header className="flex flex-col gap-4">
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-center justify-between gap-4">
@@ -186,7 +187,7 @@ export default async function IncidentPage({
             </Card>
           </aside>
         </div>
-      </main>
-    </>
+      </div>
+    </AppLayout>
   );
 }

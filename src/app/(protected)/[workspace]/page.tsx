@@ -1,6 +1,5 @@
 import { BugOffIcon } from "lucide-react";
 import { notFound, redirect } from "next/navigation";
-import { Navigation } from "@/components/navigation";
 import {
   Empty,
   EmptyDescription,
@@ -14,6 +13,7 @@ import { CreateIncidentDialog } from "@/modules/incident/components/create-incid
 import { IncidentTable } from "@/modules/incident/components/incident-table";
 import { getIncidentsByWorkspace } from "@/modules/incident/queries";
 import { getWorkspaceBySlug } from "@/modules/workspace/queries";
+import AppLayout from "@/layouts/app-layout";
 
 export default async function WorkspacePage({
   params,
@@ -34,36 +34,30 @@ export default async function WorkspacePage({
   });
 
   return (
-    <>
-      <Navigation
-        name={session.user.name}
-        email={session.user.email}
-        image={session.user.image}
-        breadcrumb={[{ label: workspace.name }]}
-      />
-      <div className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-        <div className="flex items-center flex-wrap">
-          <Heading>Incidents</Heading>
-          <div className="ml-auto">
-            <CreateIncidentDialog workspaceId={workspace.id} />
+      <AppLayout user={session.user} breadcrumb={[{ label: workspace.name }]} workspaceId={workspace.id} workspaceSlug={slug} workspaceInviteToken={workspace.inviteToken}>
+        <div className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+          <div className="flex items-center flex-wrap">
+            <Heading>Incidents</Heading>
+            <div className="ml-auto">
+              <CreateIncidentDialog workspaceId={workspace.id} />
+            </div>
           </div>
+          {incidents.length > 0 ? (
+            <IncidentTable incidents={incidents} workspaceSlug={slug} />
+          ) : (
+            <Empty className="border border-dashed border-border">
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <BugOffIcon />
+                </EmptyMedia>
+                <EmptyTitle>No incidents yet</EmptyTitle>
+                <EmptyDescription>
+                  There are no incidents in this workspace yet.
+                </EmptyDescription>
+              </EmptyHeader>
+            </Empty>
+          )}
         </div>
-        {incidents.length > 0 ? (
-          <IncidentTable incidents={incidents} workspaceSlug={slug} />
-        ) : (
-          <Empty className="border border-dashed border-border">
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <BugOffIcon />
-              </EmptyMedia>
-              <EmptyTitle>No incidents yet</EmptyTitle>
-              <EmptyDescription>
-                There are no incidents in this workspace yet.
-              </EmptyDescription>
-            </EmptyHeader>
-          </Empty>
-        )}
-      </div>
-    </>
+      </AppLayout>
   );
 }
