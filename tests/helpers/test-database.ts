@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { type Role, Severity, Status } from "@/generated/prisma/enums";
 import prisma from "@/lib/prisma";
 
@@ -33,6 +33,7 @@ export async function createTestContext(
     data: {
       name: `Test Workspace ${suffix}`,
       slug: `test-workspace-${suffix}`,
+      inviteToken: randomBytes(32).toString("hex"),
     },
   });
 
