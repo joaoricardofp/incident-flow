@@ -58,3 +58,33 @@ export const getWorkspacesByUser = cache(
     }));
   },
 );
+
+export type WorkspaceMember = {
+  id: string;
+  role: Role;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+};
+
+export const getWorkspaceMembers = cache(
+  async ({
+    workspaceId,
+  }: {
+    workspaceId: string;
+  }): Promise<WorkspaceMember[]> => {
+    const memberships = await prisma.membership.findMany({
+      where: { workspaceId },
+      select: {
+        id: true,
+        role: true,
+        user: { select: { id: true, name: true, email: true } },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    return memberships;
+  },
+);

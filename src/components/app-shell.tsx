@@ -1,5 +1,10 @@
-import React from "react";
+import { cookies } from "next/headers";
+import type React from "react";
 
+import {
+  getSidebarDefaultOpen,
+  SIDEBAR_COOKIE_NAME,
+} from "@/lib/sidebar-state";
 import { SidebarProvider } from "./ui/sidebar";
 
 type Props = {
@@ -7,7 +12,7 @@ type Props = {
   variant?: "header" | "sidebar";
 };
 
-function AppShell({ children, variant = "header", ...props }: Props) {
+async function AppShell({ children, variant = "header", ...props }: Props) {
   if (variant === "header") {
     return (
       <div className="flex min-h-screen w-full flex-col" {...props}>
@@ -16,7 +21,14 @@ function AppShell({ children, variant = "header", ...props }: Props) {
     );
   }
 
-  return <SidebarProvider>{children}</SidebarProvider>;
+  const cookieStore = await cookies();
+  const defaultOpen = getSidebarDefaultOpen(
+    cookieStore.get(SIDEBAR_COOKIE_NAME)?.value,
+  );
+
+  return (
+    <SidebarProvider defaultOpen={defaultOpen}>{children}</SidebarProvider>
+  );
 }
 
 export { AppShell };

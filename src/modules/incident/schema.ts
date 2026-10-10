@@ -1,5 +1,5 @@
-import { Severity, Status } from "@/generated/prisma/enums";
 import { z } from "zod";
+import { Severity, Status } from "@/generated/prisma/enums";
 
 export const incidentSchema = z.object({
   title: z.string().min(1).max(150),
@@ -17,3 +17,9 @@ export const updateStatusSchema = z.object({
 });
 
 export type UpdateStatusSchema = z.infer<typeof updateStatusSchema>;
+
+export const renameIncidentSchema = z.object({
+  title: z.string().trim().min(1).max(150),
+});
+
+export type RenameIncidentSchema = z.infer<typeof renameIncidentSchema>;

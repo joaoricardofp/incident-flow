@@ -1,6 +1,12 @@
 import { notFound, redirect } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Heading, Text } from "@/components/ui/typography";
 import AppLayout from "@/layouts/app-layout";
@@ -8,6 +14,7 @@ import { getSession } from "@/lib/auth";
 import { formatEnum } from "@/lib/format-enum";
 import { getMembership } from "@/lib/membership";
 import { IncidentDuration } from "@/modules/incident/components/incident-duration";
+import { RenameIncidentDialog } from "@/modules/incident/components/rename-incident-dialog";
 import { UpdateStatusControl } from "@/modules/incident/components/update-status-control";
 import { getIncidentById } from "@/modules/incident/queries";
 import { PostmortemCard } from "@/modules/postmortem/components/postmortem-card";
@@ -16,7 +23,6 @@ import { CreateCommentForm } from "@/modules/timeline/components/create-comment-
 import { TimelineList } from "@/modules/timeline/components/timeline-list";
 import { getTimelineByIncident } from "@/modules/timeline/queries";
 import { getWorkspaceBySlug } from "@/modules/workspace/queries";
-import AppLayout from "@/layouts/app-layout";
 
 function formatIncidentDate(date: Date) {
   const parts = new Intl.DateTimeFormat("en-US", {
@@ -75,6 +81,7 @@ export default async function IncidentPage({
       workspaceSlug={slug}
       incidentId={id}
       workspaceInviteToken={workspace.inviteToken}
+      canRotateInvite={membership?.role === "ADMIN"}
     >
       <div className="flex flex-1 flex-col gap-6 p-4 lg:p-6">
         <header className="flex flex-col gap-4">
@@ -176,6 +183,16 @@ export default async function IncidentPage({
                   </Text>
                 </div>
               </CardContent>
+              <Separator />
+              <CardFooter>
+                {membership?.role === "ADMIN" ? (
+                  <RenameIncidentDialog
+                    incidentId={incident.id}
+                    workspaceId={workspace.id}
+                    currentTitle={incident.title}
+                  />
+                ) : null}
+              </CardFooter>
             </Card>
             <Card>
               <CardHeader>

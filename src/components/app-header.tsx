@@ -1,9 +1,6 @@
 "use client";
 
 import { Fragment } from "react";
-
-import { SidebarTrigger } from "./ui/sidebar";
-import { Separator } from "./ui/separator";
 import {
   Breadcrumb,
   BreadcrumbLink,
@@ -12,8 +9,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Link } from "./ui/typography";
 import { NavActions } from "./nav-actions";
+import { Separator } from "./ui/separator";
+import { SidebarTrigger } from "./ui/sidebar";
+import { Link } from "./ui/typography";
 
 export type BreadcrumbItem =
   | {
@@ -28,9 +27,16 @@ export type BreadcrumbItem =
 type AppHeaderProps = {
   breadcrumb?: BreadcrumbItem[];
   workspaceInviteToken?: string;
+  workspaceId?: string;
+  canRotateInvite?: boolean;
 };
 
-function AppHeader({ breadcrumb, workspaceInviteToken }: AppHeaderProps) {
+function AppHeader({
+  breadcrumb,
+  workspaceInviteToken,
+  workspaceId,
+  canRotateInvite,
+}: AppHeaderProps) {
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b bg-background sticky top-0 z-10">
       <div className="flex justify-center items-center gap-2 px-4">
@@ -73,7 +79,11 @@ function AppHeader({ breadcrumb, workspaceInviteToken }: AppHeaderProps) {
       </div>
       {workspaceInviteToken ? (
         <div className="ml-auto px-6">
-          <NavActions workspaceInviteToken={workspaceInviteToken} />
+          <NavActions
+            workspaceInviteToken={workspaceInviteToken}
+            workspaceId={workspaceId}
+            canRotate={canRotateInvite}
+          />
         </div>
       ) : null}
     </header>

@@ -7,16 +7,24 @@ import prisma from "@/lib/prisma";
 import { createTimelineEntry } from "@/modules/timeline/service";
 import {
   type IncidentSchema,
-  type UpdateStatusSchema,
   incidentSchema,
+  type RenameIncidentSchema,
+  renameIncidentSchema,
+  type UpdateStatusSchema,
   updateStatusSchema,
 } from "./schema";
 
 type CreateIncidentResult =
-  { success: true; incidentId: string } | { success: false; error: string };
+  | { success: true; incidentId: string }
+  | { success: false; error: string };
 
 type UpdateIncidentStatusResult =
-  { success: true; noop?: true } | { success: false; error: string };
+  | { success: true; noop?: true }
+  | { success: false; error: string };
+
+type RenameIncidentResult =
+  | { success: true; title: string }
+  | { success: false; error: string };
 
 class IncidentNotFoundError extends Error {
   constructor() {
@@ -150,6 +158,77 @@ export async function updateIncidentStatus(
 
       return { success: true };
     });
+  } catch (error) {
+    if (
+      error instanceof AuthorizationError ||
+      error instanceof IncidentNotFoundError
+    ) {
+      return { success: false, error: error.message };
+    }
+
+    throw error;
+  }
+}
+
+export async function renameIncident(
+  {
+    incidentId,
+    workspaceId,
+  }: {
+    incidentId: string;
+    workspaceId: string;
+  },
+  data: RenameIncidentSchema,
+): Promise<RenameIncidentResult> {
+  try {
+    const session = await getSession();
+
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
+    await requireMembership({
+      userId: session.user.id,
+      workspaceId,
+      minRole: "ADMIN",
+    });
+
+    const parsedData = renameIncidentSchema.safeParse(data);
+
+    if (!parsedData.success) {
+      return {
+        success: false,
+        error: parsedData.error.issues.map((issue) => issue.message).join(", "),
+      };
+    }
+
+    const incident = await prisma.incident.findFirst({
+      where: {
+        id: incidentId,
+        workspaceId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!incident) {
+      throw new IncidentNotFoundError();
+    }
+
+    const updated = await prisma.incident.update({
+      where: {
+        id: incident.id,
+      },
+      data: {
+        title: parsedData.data.title,
+      },
+      select: {
+        title: true,
+      },
+    });
+
+    return { success: true, title: updated.title };
   } catch (error) {
     if (
       error instanceof AuthorizationError ||
