@@ -1,0 +1,80 @@
+@layer components {
+  .landing {
+    --landing-grid: color-mix(in oklch, var(--foreground) 6%, transparent);
+    --landing-panel: color-mix(in oklch, var(--background) 92%, var(--foreground));
+    --landing-signal: oklch(0.62 0.17 45);
+    --landing-ok: oklch(0.55 0.12 155);
+    color: var(--foreground);
+    background-color: var(--background);
+    background-image:
+      linear-gradient(var(--landing-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--landing-grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+  }
+
+  .landing-section {
+    scroll-margin-top: 5.5rem;
+  }
+
+  .landing-reveal {
+    animation: landing-fade-up 0.55s ease-out both;
+  }
+
+  .landing-reveal-delay-1 {
+    animation-delay: 0.08s;
+  }
+
+  .landing-reveal-delay-2 {
+    animation-delay: 0.16s;
+  }
+
+  .landing-reveal-delay-3 {
+    animation-delay: 0.24s;
+  }
+
+  .landing-demo-panel {
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  @keyframes landing-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes landing-flow {
+    from {
+      stroke-dashoffset: 48;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .landing-flow-path {
+    stroke-dasharray: 6 6;
+    animation: landing-flow 1.4s ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .landing-reveal,
+    .landing-reveal-delay-1,
+    .landing-reveal-delay-2,
+    .landing-reveal-delay-3,
+    .landing-flow-path,
+    .landing-demo-panel {
+      animation: none !important;
+      transition: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+}
