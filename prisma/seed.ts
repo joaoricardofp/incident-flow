@@ -1,5 +1,6 @@
 import "dotenv/config";
 
+import { randomBytes } from "node:crypto";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
@@ -57,6 +58,7 @@ async function main() {
     create: {
       name: "Acme Inc.",
       slug: "acme",
+      inviteToken: randomBytes(32).toString("hex"),
     },
   });
 

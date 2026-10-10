@@ -3,12 +3,15 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Heading, Text } from "@/components/ui/typography";
+import AppLayout from "@/layouts/app-layout";
 import { getSession } from "@/lib/auth";
 import { formatEnum } from "@/lib/format-enum";
 import { getMembership } from "@/lib/membership";
 import { IncidentDuration } from "@/modules/incident/components/incident-duration";
 import { UpdateStatusControl } from "@/modules/incident/components/update-status-control";
 import { getIncidentById } from "@/modules/incident/queries";
+import { PostmortemCard } from "@/modules/postmortem/components/postmortem-card";
+import { getPostmortemByIncident } from "@/modules/postmortem/queries";
 import { CreateCommentForm } from "@/modules/timeline/components/create-comment-form";
 import { TimelineList } from "@/modules/timeline/components/timeline-list";
 import { getTimelineByIncident } from "@/modules/timeline/queries";
@@ -50,10 +53,11 @@ export default async function IncidentPage({
 
   if (!workspace) notFound();
 
-  const [incident, timeline, membership] = await Promise.all([
+  const [incident, timeline, membership, postmortem] = await Promise.all([
     getIncidentById({ incidentId: id, workspaceId: workspace.id }),
     getTimelineByIncident({ incidentId: id, workspaceId: workspace.id }),
     getMembership({ userId: session.user.id, workspaceId: workspace.id }),
+    getPostmortemByIncident({ incidentId: id, workspaceId: workspace.id }),
   ]);
 
   if (!incident) notFound();
@@ -180,9 +184,13 @@ export default async function IncidentPage({
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Text variant="small" className="mt-0">
-                  No postmortem information is available for this incident.
-                </Text>
+                <PostmortemCard
+                  incidentId={incident.id}
+                  workspaceId={workspace.id}
+                  workspaceSlug={slug}
+                  postmortem={postmortem}
+                  canEdit={membership?.role === "ADMIN"}
+                />
               </CardContent>
             </Card>
           </aside>
