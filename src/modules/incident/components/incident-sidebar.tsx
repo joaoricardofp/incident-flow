@@ -1,4 +1,3 @@
-import { CircleAlertIcon } from "lucide-react";
 import Link from "next/link";
 import {
   SidebarGroup,
@@ -30,7 +29,7 @@ export function IncidentSidebar({
       <SidebarGroupContent>
         <SidebarMenu>
           {incidents.length === 0 ? (
-            <SidebarMenuItem>
+            <SidebarMenuItem className="group-data-[collapsible=icon]:hidden">
               <span className="px-2 py-1.5 text-sm text-sidebar-foreground/70 group-data-[collapsible=icon]:hidden">
                 No incidents yet
               </span>
@@ -40,7 +39,7 @@ export function IncidentSidebar({
               const isActive = incident.id === activeIncidentId;
 
               return (
-                <SidebarMenuItem key={incident.id}>
+                <SidebarMenuItem className="group-data-[collapsible=icon]:hidden" key={incident.id}>
                   <SidebarMenuButton
                     render={
                       <Link
@@ -51,7 +50,6 @@ export function IncidentSidebar({
                     aria-current={isActive ? "page" : undefined}
                     tooltip={incident.title}
                   >
-                    <CircleAlertIcon data-icon="inline-start" />
                     <span>{incident.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

@@ -2,7 +2,9 @@
 
 import { Check, Copy, MoreHorizontalIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { RotateInviteButton } from "@/modules/workspace/components/rotate-invite-button";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import {
   Popover,
   PopoverContent,
@@ -11,13 +13,17 @@ import {
   PopoverTitle,
   PopoverTrigger,
 } from "./ui/popover";
-import { Input } from "./ui/input";
 import { toast } from "./ui/toast";
+import { Text } from "./ui/typography";
 
 export function NavActions({
   workspaceInviteToken,
+  workspaceId,
+  canRotate,
 }: {
   workspaceInviteToken: string;
+  workspaceId?: string;
+  canRotate?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -82,6 +88,16 @@ export function NavActions({
             {copied ? <Check /> : <Copy />}
           </Button>
         </div>
+
+        {canRotate && workspaceId ? (
+          <div className="mt-3 flex flex-col gap-1.5">
+            <RotateInviteButton workspaceId={workspaceId} />
+            <Text variant="muted">
+              Rotating generates a new link and invalidates the previous one
+              immediately.
+            </Text>
+          </div>
+        ) : null}
       </PopoverContent>
     </Popover>
   );

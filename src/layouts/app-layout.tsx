@@ -1,10 +1,9 @@
 import type React from "react";
-
-import { AppShell } from "../components/app-shell";
-import { AppContent } from "../components/app-content";
-import { AppHeader } from "../components/app-header";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset } from "@/components/ui/sidebar";
+import { AppContent } from "../components/app-content";
+import { AppHeader } from "../components/app-header";
+import { AppShell } from "../components/app-shell";
 
 export type BreadcrumbItem =
   | {
@@ -29,6 +28,7 @@ type AppLayoutProps = {
   workspaceSlug?: string;
   incidentId?: string;
   workspaceInviteToken?: string;
+  canRotateInvite?: boolean;
 };
 
 export default function AppLayout({
@@ -39,6 +39,7 @@ export default function AppLayout({
   workspaceSlug,
   incidentId,
   workspaceInviteToken,
+  canRotateInvite,
 }: AppLayoutProps) {
   return (
     <AppShell variant="sidebar">
@@ -49,7 +50,12 @@ export default function AppLayout({
         incidentId={incidentId}
       />
       <SidebarInset>
-        <AppHeader breadcrumb={breadcrumb} workspaceInviteToken={workspaceInviteToken} />
+        <AppHeader
+          breadcrumb={breadcrumb}
+          workspaceInviteToken={workspaceInviteToken}
+          workspaceId={workspaceId}
+          canRotateInvite={canRotateInvite}
+        />
         <AppContent variant="sidebar">{children}</AppContent>
       </SidebarInset>
     </AppShell>

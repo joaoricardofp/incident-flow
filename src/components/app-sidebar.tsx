@@ -1,7 +1,12 @@
 import type React from "react";
-import { getIncidentsByWorkspace } from "@/modules/incident/queries";
 import { IncidentSidebar } from "@/modules/incident/components/incident-sidebar";
-import { getWorkspacesByUser } from "@/modules/workspace/queries";
+import { getIncidentsByWorkspace } from "@/modules/incident/queries";
+import { WorkspaceSettingsDialog } from "@/modules/workspace/components/workspace-settings-dialog";
+import {
+  getWorkspaceBySlug,
+  getWorkspaceMembers,
+  getWorkspacesByUser,
+} from "@/modules/workspace/queries";
 import { AppUser } from "./app-user";
 import {
   Sidebar,
@@ -30,11 +35,15 @@ async function AppSidebar({
   incidentId,
   ...props
 }: React.ComponentProps<typeof Sidebar> & AppSidebarProps) {
-  const [workspaces, incidents] = await Promise.all([
+  const [workspaces, incidents, members, workspace] = await Promise.all([
     user ? getWorkspacesByUser({ userId: user.id }) : Promise.resolve([]),
     workspaceId
       ? getIncidentsByWorkspace({ workspaceId })
       : Promise.resolve([]),
+    workspaceId ? getWorkspaceMembers({ workspaceId }) : Promise.resolve([]),
+    workspaceSlug
+      ? getWorkspaceBySlug({ slug: workspaceSlug })
+      : Promise.resolve(null),
   ]);
   const currentWorkspace =
     workspaces.find((workspace) => workspace.id === workspaceId) ?? null;
@@ -59,7 +68,20 @@ async function AppSidebar({
         ) : null}
       </SidebarContent>
 
-      <SidebarFooter>{user ? <AppUser user={user} /> : null}</SidebarFooter>
+      <SidebarFooter>
+        {workspaceId && workspaceSlug && user && currentWorkspace ? (
+          <WorkspaceSettingsDialog
+            workspaceId={workspaceId}
+            workspaceSlug={workspaceSlug}
+            workspaceName={currentWorkspace.name}
+            workspaceInviteToken={workspace?.inviteToken}
+            members={members}
+            currentUserId={user.id}
+            currentRole={currentWorkspace.role}
+          />
+        ) : null}
+        {user ? <AppUser user={user} /> : null}
+      </SidebarFooter>
     </Sidebar>
   );
 }

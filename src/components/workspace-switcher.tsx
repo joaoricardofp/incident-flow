@@ -1,20 +1,28 @@
 "use client";
 
-import { BoxesIcon, CheckIcon, ChevronsUpDownIcon } from "lucide-react";
+import {
+  BoxesIcon,
+  CheckIcon,
+  ChevronsUpDownIcon,
+  PlusIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { createWorkspace } from "@/modules/workspace/actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
 import { Spinner } from "./ui/spinner";
+import { toast } from "./ui/toast";
 
 export type WorkspaceSwitcherWorkspace = {
   id: string;
@@ -53,6 +61,30 @@ export function WorkspaceSwitcher({
     setPendingWorkspaceId(selectedWorkspace.id);
     startTransition(() => {
       router.push(`/${selectedWorkspace.slug}`);
+    });
+  }
+
+  function handleCreateWorkspace() {
+    if (isPending) {
+      return;
+    }
+
+    setPendingWorkspaceId("create");
+    startTransition(async () => {
+      const result = await createWorkspace();
+
+      if (!result.success) {
+        setPendingWorkspaceId(null);
+        toast.add({
+          type: "error",
+          description: result.error,
+          priority: "high",
+        });
+        return;
+      }
+
+      router.push(`/${result.slug}`);
+      router.refresh();
     });
   }
 
@@ -143,6 +175,28 @@ export function WorkspaceSwitcher({
                   No workspaces available
                 </DropdownMenuItem>
               )}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                disabled={isPending}
+                onClick={handleCreateWorkspace}
+                className="gap-2 p-2"
+              >
+                <div
+                  aria-hidden="true"
+                  className="flex size-6 items-center justify-center rounded-md border text-xs font-medium"
+                >
+                  {isPending && pendingWorkspaceId === "create" ? (
+                    <Spinner />
+                  ) : (
+                    <PlusIcon />
+                  )}
+                </div>
+                <span className="min-w-0 flex-1 truncate">
+                  Create workspace
+                </span>
+              </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
