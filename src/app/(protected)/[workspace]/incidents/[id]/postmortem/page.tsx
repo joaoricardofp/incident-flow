@@ -61,12 +61,6 @@ export default async function PostmortemPage({
   const canEdit = role === "ADMIN";
   const roomId = buildPostmortemRoomId(postmortem.id);
 
-  console.log({
-    isDate: postmortem.updatedAt instanceof Date,
-    value: postmortem.updatedAt,
-    iso: postmortem.updatedAt.toISOString(),
-  });
-
   return (
     <AppLayout
       user={session.user}

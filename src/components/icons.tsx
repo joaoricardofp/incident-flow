@@ -1,7 +1,7 @@
 function GitHubIcon({
   className,
   ...props
-}: React.ReactSVGElement & { className?: string }) {
+}: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       width={98}
@@ -27,7 +27,7 @@ function GitHubIcon({
   );
 }
 
-function GoogleIcon({ ...props }: React.ReactSVGElement) {
+function GoogleIcon({ ...props }: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 268.1522 273.8827"
